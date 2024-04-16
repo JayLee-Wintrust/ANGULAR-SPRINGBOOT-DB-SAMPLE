@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/name: db
+    app.kubernetes.io/version: 0.0.1
+    app.kubernetes.io/part-of: employee-manager
+  name: db-data
+  namespace: employee-manager
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi

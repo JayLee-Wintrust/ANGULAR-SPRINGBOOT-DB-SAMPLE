@@ -1,0 +1,49 @@
+services:
+  ui:
+    build: ui
+    ports:
+      - 4200:8080
+    depends_on:
+      - api
+
+  api:
+    build: api # api is name of the folder
+    # environment:
+    #   - spring_config_location=/usr/local/tomcat/conf/
+    # configs:
+    #   - source: application_properties
+    #     target: /usr/local/tomcat/conf/application.properties
+    #     uid: "1001"
+    #     gid: "1001"
+    #     mode: 0440 #Permission 
+    ports:
+      - 8080:8080
+    networks:
+      - development_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    build: db
+    restart: always
+    networks:
+      - development_network
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+    volumes:
+      - db_data:/var/lib/postgresql/data  
+
+networks:
+  development_network:
+
+configs:
+  application_properties:
+    file: ./application.properties
+volumes:
+  db_data:
+    

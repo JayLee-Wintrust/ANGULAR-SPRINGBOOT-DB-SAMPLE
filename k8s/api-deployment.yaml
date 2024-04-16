@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: api
+    app.kubernetes.io/version: 0.0.1
+    app.kubernetes.io/part-of: employee-manager
+  name: api
+  namespace: employee-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api
+      app.kubernetes.io/version: 0.0.1
+      app.kubernetes.io/part-of: employee-manager
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: api
+        app.kubernetes.io/version: 0.0.1
+        app.kubernetes.io/part-of: employee-manager
+    spec:
+      containers:
+        - image: localhost:5000/api:0.0.1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          name: db
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
